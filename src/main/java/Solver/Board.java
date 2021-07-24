@@ -17,7 +17,7 @@ public class Board {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
-        print(RED, this.toString(), true);
+//        print(RED, this.toString(), true);
     }
 
     private void deepCopy(int[][] field) throws IllegalArgumentException {

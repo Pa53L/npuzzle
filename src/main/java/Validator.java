@@ -1,53 +1,55 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Validator {
 
     private static int size;
 
-    public static ArrayList<Integer> validation(String name) {
+    public static int[][] validation(String name) {
         String str;
         char[] strArray;
-        size = 0;
         int i = 0;
-        ArrayList<Integer> map = new ArrayList<Integer>();
-        File file = new File("test.txt");
+        int j = 0;
+        int[][] map = null;
+        File file = new File(name);
 
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(file);
+        try (Scanner scanner = new Scanner(file)) {
+//            scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                str = scanner.nextLine();
+                strArray = str.toCharArray();
+                if (strArray[0] == '#') {
+                    continue;
+                } else if (strArray.length == 1) {
+//                System.out.println(Integer.parseInt(str));
+                    size = Integer.parseInt(str);
+//                System.out.println(size);
+                    if (size < 2) {
+                        System.exit(-1);
+                    }
+                    break;
+                }
+            }
+
+            map = new int[size][size];
+            int[] tmp = new int[size];
+            String[] stringNumers;
+            while (scanner.hasNextLine()) {
+                i = 0;
+                str = scanner.nextLine();
+                strArray = str.toCharArray();
+                checkNumbers(strArray);
+                stringNumers = str.split(" ");
+                for (String number : stringNumers) {
+                    tmp[i] = Integer.parseInt(number);
+                    map[j][i] = tmp[i];
+                    i++;
+                }
+                j++;
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-        while (scanner.hasNextLine()) {
-            str = scanner.nextLine();
-            strArray = str.toCharArray();
-            if (strArray[0] == '#') {
-
-            } else if (strArray.length == 1) {
-                if (size != 0) {
-                    System.exit(-1);
-                }
-                if ((size = Integer.getInteger(str)) < 2) {
-                    System.exit(-1);
-                }
-                break;
-            }
-        }
-        int[] tmp = new int[size];
-        String[] stringNumers;
-        while (scanner.hasNextLine()) {
-            i = 0;
-            str = scanner.nextLine();
-            strArray = str.toCharArray();
-            checkNumbers(strArray);
-            stringNumers = str.split(" ");
-            for (String number : stringNumers) {
-                tmp[i++] = Integer.getInteger(number);
-                map.add(tmp[i]);
-            }
         }
         solutionsExist(map);
         return map;
@@ -61,7 +63,7 @@ public class Validator {
                 continue;
             } else if (charStr[i] == '#') {
                 if (i < size * 2 - 1) {
-                    System.exit(-1);
+                   // System.exit(-1);
                 } else {
                     continue;
                 }
@@ -69,18 +71,34 @@ public class Validator {
         }
     }
 
-    private static void solutionsExist(ArrayList<Integer> map) {
+    private static void solutionsExist(int[][] map) {
         int i = 0;
-        Integer num;
-        for (int j = 0; j < map.size(); j++) {
-            num = map.get(j);
-            for (int k = j + 1; k < map.size(); k++) {
-                if (num > map.get(k)) {
-                    i++;
-                }
+        int j;
+        int k;
+        int s = 0;
+        int f = 0;
+        int num;
+        while (s * f != (size - 1) * (size - 1)) {
+            if (s == size) {
+                f++;
+                s = 0;
             }
+            num = map[f][s];
+            j = f;
+            while (j < map.length) {
+                k = s + 1;
+                while (k < map[j].length) {
+                    if (num > map[j][k] && map[j][k] != 0) {
+                        i++;
+                    }
+                    k++;
+                }
+                j++;
+            }
+            s++;
         }
         if (i % 2 == 1) {
+            System.out.println(i);
             System.exit(-1);
         }
     }

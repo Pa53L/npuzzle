@@ -1,6 +1,7 @@
 package Utils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class ColorPrint {
     public static final String RESET = "\u001b[0m";
@@ -18,8 +19,9 @@ public class ColorPrint {
     public static final String UP = "\uD83E\uDC79";
     public static final String DOWN = "\uD83E\uDC7B";
 
-    public static void print(String color, String text, boolean newLine) {
-        System.out.print(color + text + RESET);
+    public static void print(String color, int[] text, boolean newLine) {
+        String tmp = Arrays.toString(text);
+        System.out.print(GREEN + tmp + RESET);
         if (newLine)
             System.out.println();
     }
