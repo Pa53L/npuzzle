@@ -12,7 +12,7 @@ public class Npuzzle {
     public static void main(String[] args) {
         int[][] y = Validator.validation("test.txt");
         for (int[] i : y) {
-            ColorPrint.print("GREEN", i, true);
+            ColorPrint.print(BLUE, i, true);
 //            System.out.println(Arrays.toString(i));
         }
 //        Arrays.stream(y).forEach(System.out::println);

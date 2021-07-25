@@ -21,7 +21,7 @@ public class ColorPrint {
 
     public static void print(String color, int[] text, boolean newLine) {
         String tmp = Arrays.toString(text);
-        System.out.print(GREEN + tmp + RESET);
+        System.out.print(color + tmp + RESET);
         if (newLine)
             System.out.println();
     }

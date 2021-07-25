@@ -9,42 +9,41 @@ public class Validator {
     public static int[][] validation(String name) {
         String str;
         char[] strArray;
-        int i = 0;
         int j = 0;
         int[][] map = null;
         File file = new File(name);
+        int cur;
 
         try (Scanner scanner = new Scanner(file)) {
-//            scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 str = scanner.nextLine();
                 strArray = str.toCharArray();
-                if (strArray[0] == '#') {
-                    continue;
-                } else if (strArray.length == 1) {
-//                System.out.println(Integer.parseInt(str));
+                cur = normalSize(strArray);
+                if (cur == 1) {
                     size = Integer.parseInt(str);
-//                System.out.println(size);
                     if (size < 2) {
                         System.exit(-1);
                     }
                     break;
+                } else if (cur == 2) {
+                    System.exit(-1);
                 }
             }
-
             map = new int[size][size];
             int[] tmp = new int[size];
-            String[] stringNumers;
+            String[] stringNumbers;
             while (scanner.hasNextLine()) {
-                i = 0;
                 str = scanner.nextLine();
                 strArray = str.toCharArray();
-                checkNumbers(strArray);
-                stringNumers = str.split(" ");
-                for (String number : stringNumers) {
-                    tmp[i] = Integer.parseInt(number);
-                    map[j][i] = tmp[i];
-                    i++;
+                cur = parsingTable(strArray);
+                if (cur == 1) {
+                    stringNumbers = str.split(" ", size + 1);
+                    for (int i = 0; i < size; i++) {
+                        tmp[i] = Integer.parseInt(stringNumbers[i]);
+                        map[j][i] = tmp[i];
+                    }
+                } else if (cur == 2) {
+                    System.exit(-1);
                 }
                 j++;
             }
@@ -54,21 +53,56 @@ public class Validator {
         solutionsExist(map);
         return map;
     }
-    //todo дописать проверки с пробелом
-    private static void checkNumbers(char[] charStr) {
-        for (int i = 0; i < charStr.length; i++) {
-            if ('0' < charStr[i] && charStr[i] < '9') {
-                continue;
-            } else if (charStr[i] == ' ') {
-                continue;
-            } else if (charStr[i] == '#') {
-                if (i < size * 2 - 1) {
-                   // System.exit(-1);
-                } else {
+
+    //todo этот метод какая-то хуета, писал под пивасом, в понедельник разобраться
+    private static int parsingTable(char[] str) {
+//        System.out.println(str);
+        int len = str.length;
+        int countNum = 0;
+
+        if (str[0] == '#') {
+            return 0;
+        }
+//        System.out.println(len);
+        for (int i = 0; i < len; i++) {
+            System.out.println("1 " + str[i]);
+            while(isNumber(str[i]) && i < len - 1) {
+                System.out.println("2 " + str[i]);
+                i++;
+            }
+            countNum++;
+            if (str[i] == ' ') {
+                i++;
+            } else if (str[i] == '#' && countNum == size) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+        return 1;
+    }
+
+    private static int normalSize(char[] str) {
+        int len = str.length;
+
+        if (str[0] == '#') {
+            return 0;
+        } else if (isNumber(str[0])) {
+            for (int i = 1; i < len; i++) {
+                if (str[i] == ' ') {
                     continue;
+                } else if (str[i] == '#') {
+                    return 1;
+                } else {
+                    return 2;
                 }
             }
         }
+        return 1;
+    }
+
+    private static boolean isNumber(char c) {
+        return c >= '0' && c <= '9';
     }
 
     private static void solutionsExist(int[][] map) {
@@ -88,6 +122,9 @@ public class Validator {
             while (j < map.length) {
                 k = s + 1;
                 while (k < map[j].length) {
+                    if (num == map[j][k] || map[j][k] >= size * size || map[j][k] < 0) {
+                        System.exit(2);
+                    }
                     if (num > map[j][k] && map[j][k] != 0) {
                         i++;
                     }
@@ -98,7 +135,6 @@ public class Validator {
             s++;
         }
         if (i % 2 == 1) {
-            System.out.println(i);
             System.exit(-1);
         }
     }
